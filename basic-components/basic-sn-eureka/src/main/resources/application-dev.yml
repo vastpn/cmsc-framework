@@ -1,0 +1,46 @@
+#####################
+# 应用基础配置
+# 描述:引用pom.xml时，必须在application.yml加载顺序之后。bootstrap.yml就不能获取到pom.xml的属性
+#####################
+spring:
+  application:
+    name: @pom.artifactId@
+
+#####################
+# 服务配置
+#####################
+server:
+  port: 8761
+##########################################
+# 日志配置(SBA中可以看到日志内容)
+##########################################
+logging:
+  file: ./logs/${spring.application.name}/${spring.application.name}.log
+  config: classpath:./log4j2.xml
+
+eureka:
+  instance:
+    #实例唯一标识ID，在application.yml优先级以下有效;spring.cloud.client.ip-address 参考 HostInfoEnvironmentPostProcessor
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+    #主机名注册模式（系统主机名配置，如Windows的host文件）
+    hostname: ${spring.application.name}
+    #注册到注册中心的应用名称
+    appname: ${spring.application.name}
+    #优先IP注册模式，相对于hostname主机名模式
+    prefer-ip-address: true
+    #优先IP注册模式下的IP地址
+    ip-address: ${spring.cloud.client.ip-address}
+  server:
+    #服务列表自我保护机制，默认为true；DEV环境建议false，生产建议为true
+    enable-self-preservation: false
+    #清除无效服务实例的时间间隔（ms），默认1分钟，建议配置时间缩短
+    eviction-interval-timer-in-ms: 10000
+
+  client:
+    #注册中心非集群：false，集群模式：true；客户端是否获取eureka服务器注册表上的注册信息
+    fetch-registry: false
+    #注册中心非机群：false，集群模式：true，并可以显示Eureka本身实例；指示此实例是否应将其信息注册到eureka服务器以供其他服务发现
+    register-with-eureka: true
+    #集群模式下，填写非当前eureka注册地址服务，以逗号隔开
+    service-url:
+      defaultZone: http://${eureka.instance.ip-address}:${server.port}/eureka/
