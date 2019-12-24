@@ -19,7 +19,8 @@
             ├── basic-ha-eureka         高可用Eureka注册中心
             └── basic-sn-eureka         单节点Eureka注册中心
         ├── basic-domain                基础领域模型系统(POM)
-        
+            ├── cmsc-usc                用户服务中心
+            
         
         └── README.md                   项目说明文件
 ```     
